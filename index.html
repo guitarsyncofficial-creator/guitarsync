@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuitarSync - Backing Tracks Profesionales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+		
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #87ceeb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        html {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .view-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .view-btn {
+            padding: 0.8rem 2rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(0, 212, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+        }
+
+        .view-btn.active {
+            background: linear-gradient(45deg, #00d4ff, #0ea5e9);
+            border-color: #00d4ff;
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .view-btn:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .bands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .band-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .band-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #00d4ff;
+        }
+
+        .band-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .band-count {
+            color: #87ceeb;
+            font-size: 0.9rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            color: #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        .technical-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .technical-title {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .tech-label {
+            color: #87ceeb;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .tech-value {
+            color: white;
+            font-size: 1rem;
+        }
+
+        .chord-progression {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .song-structure {
+            background: rgba(135, 206, 235, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(135, 206, 235, 0.2);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .techniques-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .technique-tag {
+            background: linear-gradient(45deg, #1e3a5f, #2c5aa0);
+            color: #00d4ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .song-technical-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 0.8rem 0;
+            padding: 0.8rem;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            color: #87ceeb;
+        }
+
+        .tech-icon {
+            font-size: 0.9rem;
+        }
+
+        .difficulty-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-principiante {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .difficulty-intermedio {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .difficulty-avanzado {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #00d4ff rgba(30, 58, 95, 0.2);
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00d4ff, #0ea5e9);
+            border-radius: 8px;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 9999;
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #87ceeb, #0ea5e9);
+            width: 0%;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #00d4ff, #0ea5e9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.6);
+        }
+
+        .search-container {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00d4ff;
+        }
+
+        /* FILTROS MEJORADOS RESPONSIVOS */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 0.8rem 1.2rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(0, 212, 255, 0.1);
+            color: #ffffff;
+            font-size: 0.9rem;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:hover, .filter-select:focus {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            outline: none;
+        }
+
+        .filter-select option {
+            background: #1e3a5f;
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .song-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #00d4ff;
+        }
+
+        .song-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1e3a5f, #00d4ff);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-thumbnail img {
+            width: 100%;
+            height: 115%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .song-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #00d4ff;
+        }
+
+        .song-genre {
+            color: #87ceeb;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .song-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-free {
+            background: linear-gradient(45deg, #00d4ff, #0ea5e9);
+            color: white;
+        }
+
+        .btn-premium {
+            background: linear-gradient(45deg, #1e3a5f, #2563eb);
+            color: white;
+            border: 2px solid #00d4ff;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1e3a5f, #2c5aa0);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 95%;
+            max-height: 95vh;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 1001;
+        }
+
+        .close-btn:hover {
+            color: #00d4ff;
+        }
+
+        .modal-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-genre {
+            color: #87ceeb;
+            font-size: 1.1rem;
+        }
+
+        /* NUEVA ESTRUCTURA DEL MODAL MEJORADA */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Video ocupa toda la pantalla primero */
+        .video-section-full {
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .video-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            width: 100%;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3a5f, #00d4ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            text-align: center;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Información técnica centrada */
+        .technical-info-centered {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .technical-details {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* Opciones de descarga lado a lado */
+        .download-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .download-option {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+        }
+
+        .download-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .free-badge {
+            background: #00d4ff;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .premium-badge {
+            background: #1e3a5f;
+            color: #00d4ff;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid #00d4ff;
+        }
+
+        .features-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .features-list li {
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .premium-features li::before {
+            color: #00d4ff;
+        }
+
+        .tablature-preview {
+            background: #f8f9fa;
+            color: #333;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            padding-top: 2rem;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('https://res.cloudinary.com/dkuwnbpsu/image/upload/v1755130267/Banner-0_k2ptkq.png') center/cover no-repeat;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00d4ff, #87ceeb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .hero button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #00d4ff, #0ea5e9);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hero button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* MEDIA QUERIES MEJORADAS */
+        @media (max-width: 1024px) {
+            .modal-content {
+                width: 90%;
+                padding: 1.5rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .filter-select {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .view-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .view-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            /* Modal en móviles */
+            .modal-content {
+                width: 95%;
+                height: 95vh;
+                padding: 1rem;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                border-radius: 15px;
+            }
+
+            .download-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .tech-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .download-option {
+                padding: 1.5rem;
+            }
+
+            ::-webkit-scrollbar {
+                display: none;
+            }
+            
+            html {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .songs-grid {
+                grid-template-columns: 1fr;
+				gap: 1rem;
+                margin: 1rem 0;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+			.song-card {
+    padding: 1rem;
+    margin: 0 0.5rem;
+}
+
+.song-thumbnail {
+    height: 200px;
+    margin-bottom: 0.8rem;
+}
+
+.song-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.song-genre {
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.song-technical-info {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+}
+
+.tech-item {
+    font-size: 0.7rem;
+}
+
+.song-date {
+    font-size: 0.7rem;
+    color: #87ceeb;
+    margin-top: 0.5rem;
+}
+
+.song-actions {
+    margin-top: 0.8rem;
+}
+
+.btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+/* ARREGLO PARA INFO TÉCNICA EN 2x2 EN MÓVIL */
+.song-technical-info {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    margin: 0.6rem 0;
+    padding: 0.6rem;
+    text-align: center;
+}
+
+.tech-item {
+    font-size: 0.75rem;
+    justify-content: center;
+    text-align: center;
+}
+
+.difficulty-badge {
+    margin: 0 auto;
+    display: inline-block;
+}
+
+/* ARREGLO PARA IMAGEN HERO EN MÓVIL - VERSION LIMPIA */
+.hero {
+    background-image: url('https://res.cloudinary.com/dkuwnbpsu/image/upload/v1755130267/Banner-0_k2ptkq.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important; /* Importante para móviles */
+    min-height: 100vh;
+}
+/* Asegurar que el overlay funcione */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    z-index: 1;
+}
+.hero > * {
+    position: relative;
+    z-index: 2;
+}
+.tech-detail {
+    text-align: center;
+    padding: 0.5rem;
+}
+.tech-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.tech-value {
+    font-size: 0.9rem;
+}
+/* CENTRAR TÉCNICAS REQUERIDAS EN MÓVIL */
+.techniques-list {
+    justify-content: center;
+    text-align: center;
+}
+
+.technique-tag {
+    margin: 0.2rem;
+    display: inline-block;
+}
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .filters {
+                margin: 1rem 0;
+                padding: 1rem;
+            }
+
+            .filter-label {
+                font-size: 0.8rem;
+            }
+
+            .filter-select {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .modal-content {
+                width: 98%;
+                height: 98vh;
+                padding: 0.8rem;
+                border-radius: 10px;
+            }
+
+            .download-option {
+                padding: 1rem;
+            }
+
+            .download-title {
+                font-size: 1.1rem;
+            }
+			.song-card {
+    padding: 0.8rem;
+    margin: 0;
+}
+
+.song-thumbnail {
+    height: 150px;
+}
+.hero {
+    background-attachment: scroll !important;
+    -webkit-background-size: cover !important;
+}
+.tech-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.8rem;
+}
+
+.tech-detail {
+    padding: 0.3rem;
+}
+.techniques-list {
+    gap: 0.3rem;
+}
+
+.technique-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+}
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTopFunction()">
+        ↑
+    </button>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🎸 GuitarSync</div>
+                <nav>
+                    <span>Backing Tracks Originales</span>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>Backing Tracks de Calidad</h1>
+        <p>Descubre backing tracks profesionales y originales para guitarra. Versiones gratuitas y premium con tablaturas incluidas.</p>
+        <button onclick="scrollToOptions()">Ver Opciones</button>
+    </div>
+
+    <main class="container">
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Buscar canciones..." id="searchInput">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="view-buttons">
+            <button class="view-btn active" id="songsViewBtn" onclick="showSongsView()">🎵 Más Recientes</button>
+            <button class="view-btn" id="bandsViewBtn" onclick="showBandsView()">🎸 Bandas</button>
+        </div>
+
+        <div class="filters" id="filtersSection">
+            <div class="filter-group">
+                <span class="filter-label">🎸 Género</span>
+                <select class="filter-select" id="genreFilter">
+                    <option value="">Todos los géneros</option>
+                    <option value="rock">Rock</option>
+                    <option value="blues">Blues</option>
+                    <option value="metal">Metal</option>
+                    <option value="jazz">Jazz</option>
+                    <option value="pop">Pop</option>
+                    <option value="folk">Folk</option>
+                    <option value="country">Country</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label">🎯 Tipo de Guitarra</span>
+                <select class="filter-select" id="guitarTypeFilter">
+                    <option value="">Todos los tipos</option>
+                    <option value="electrica">Eléctrica</option>
+                    <option value="acustica">Acústica</option>
+                    <option value="clasica">Clásica</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label">⚡ Tempo (BPM)</span>
+                <select class="filter-select" id="tempoFilter">
+                    <option value="">Todos los tempos</option>
+                    <option value="lento">Lento (60-90)</option>
+                    <option value="moderado">Moderado (91-120)</option>
+                    <option value="rapido">Rápido (121-150)</option>
+                    <option value="muy-rapido">Muy Rápido (150+)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label">🎼 Afinación</span>
+                <select class="filter-select" id="tuningFilter">
+                    <option value="">Todas las afinaciones</option>
+                    <option value="estandar">Estándar (E-A-D-G-B-E)</option>
+                    <option value="drop-d">Drop D (D-A-D-G-B-E)</option>
+                    <option value="drop-c">Drop C (C-G-C-F-A-D)</option>
+                    <option value="medio-tono">Medio tono abajo</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label">📊 Dificultad</span>
+                <select class="filter-select" id="difficultyFilter">
+                    <option value="">Todas las dificultades</option>
+                    <option value="principiante">🟢 Principiante</option>
+                    <option value="intermedio">🟡 Intermedio</option>
+                    <option value="avanzado">🔴 Avanzado</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section-header" id="sectionHeader" style="display: none;">
+            <button class="back-btn" onclick="showBandsView()">← Volver</button>
+            <div class="section-title" id="sectionTitle"></div>
+        </div>
+
+        <div class="songs-grid" id="songsGrid">
+        </div>
+
+        <div class="bands-grid" id="bandsGrid" style="display: none;">
+        </div>
+    </main>
+
+    <!-- MODAL REDISEÑADO -->
+    <div class="modal" id="songModal">
+        <div class="modal-content scroll-container">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Canción</h2>
+                <div class="modal-genre" id="modalGenre">Género</div>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Video ocupa toda la pantalla -->
+                <div class="video-section-full">
+                    <div class="video-container">
+    <iframe 
+        width="100%" 
+        height="100%" 
+        src="https://www.youtube.com/embed/${song.youtubeId}" 
+        title="${song.title}"
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen
+        style="display: block;">
+    </iframe>
+    <div class="video-fallback" style="display: none; background: linear-gradient(135deg, #1e3a5f, #00d4ff); color: white; height: 100%; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;">
+        <div style="font-size: 2rem;">🎥</div>
+        <div>Video no disponible para inserción</div>
+        <a href="https://www.youtube.com/watch?v=${song.youtubeId}" target="_blank" style="color: #00d4ff; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid #00d4ff; border-radius: 20px;">Ver en YouTube</a>
+    </div>
+</div>
+                    </div>
+                </div>
+
+                <!-- Información técnica centrada -->
+                <div class="technical-info-centered">
+                    <div class="technical-details" id="technicalDetailsContainer">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Opciones de descarga lado a lado -->
+                <div class="download-section">
+                    <div class="download-option">
+                        <div class="download-title">
+                            <span>Basico</span>
+                            <span class="free-badge">GRATIS</span>
+                        </div>
+                        <ul class="features-list">
+                            <li>Calidad 128 kbps</li>
+                            <li>Sin pista de voz</li>
+                            <li>Vista previa de tablatura</li>
+                        </ul>
+                        <div class="tablature-preview">
+                            <strong>Vista previa de tablatura:</strong><br>
+                            E|--3--3--3--3--|<br>
+                            B|--3--3--3--3--|<br>
+                            G|--0--0--0--0--|<br>
+                            <em>...contenido limitado...</em>
+                        </div>
+                        <button class="btn btn-free" onclick="downloadFree()">Descarga Gratuita</button>
+                    </div>
+                    
+                    <div class="download-option">
+                        <div class="download-title">
+                            <span>Avanzado</span>
+                            <span class="premium-badge">PREMIUM</span>
+                        </div>
+                        <ul class="features-list premium-features">
+                            <li>Calidad 320 kbps</li>
+                            <li>Con pista de voz</li>
+                            <li>Tablatura completa en PDF</li>
+                        </ul>
+                        <button class="btn btn-premium" onclick="buyPremium()">Comprar Premium - $2.99</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const songs = [
+            {
+                id: 1,
+                title: "De Musica Ligera",
+                artist: "Soda Stereo",
+                genre: "rock",
+                date: "2025-07-12",
+                guitarType: "electrica",
+                tempo: 124,
+                tuning: "estandar",
+                difficulty: "intermedio",
+                key: "Bm",
+                chordProgression: "Bm | G | D | A",
+                structure: "Solo",
+                techniques: ["Arpegio", "Slide", "Pull off", "Hammer On"],
+                thumbnail: "https://i.ytimg.com/vi/T_FkEw27XJ0/maxresdefault.jpg",
+				youtubeId: "T_FkEw27XJ0"
+            },
+            {
+                id: 2,
+                title: "Ji Ji Ji",
+                artist: "Patricio Rey Y Sus Redonditos De Ricota",
+                genre: "rock",
+                date: "2025-07-8",
+                guitarType: "electrica",
+                tempo: 169,
+                tuning: "estandar",
+                difficulty: "Intermedio",
+                key: "F",
+                chordProgression: "Dm | A7 | E7 (B5)",
+                structure: "Solo",
+                techniques: ["Bending","Vibrato","Pull off","Slide"],
+                thumbnail: "https://i.ytimg.com/vi/3FCfMC2vq_c/maxresdefault.jpg",
+				youtubeId: "T_FkEw27XJ0"
+            },
+            {
+                id: 3,
+                title: "Kamikaze",
+                artist: "Airbag",
+                genre: "rock",
+                date: "2025-06-28",
+                guitarType: "electrica",
+                tempo: 120,
+                tuning: "estandar",
+                difficulty: "intermedio",
+                key: "F#",
+                chordProgression: "C#5 | A5 | B5 | C#5",
+                structure: "Intro – Verso – Coro – Verso 2 - Coro - Solo – Outro",
+                techniques: ["Slide", "Pull off", "Palm muting", "Bending"],
+                thumbnail: "https://i.ytimg.com/vi/gf8Cn3Qo3sM/maxresdefault.jpg",
+				youtubeId: "T_FkEw27XJ0"
+            },
+            {
+                id: 4,
+                title: "Persiana Americana",
+                artist: "Soda Stereo",
+                genre: "rock",
+                date: "2025-07-19",
+                guitarType: "electrica",
+                tempo: 101,
+                tuning: "estandar",
+                difficulty: "intermedio",
+                key: "G",
+                chordProgression: "G | C | G | Em",
+                structure: "Intro - Verso 1 - Pre-Coro - Coro - Verso 2 - Pre-Coro - Coro - Puente - Pre Estribillo - Coro - Outro",
+                techniques: ["Arpegio", "Rasgueo", "Pull off"],
+                thumbnail: "https://i.ytimg.com/vi/9ViQ9A0ddkk/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDGS4m2JmzgzoP6jhfSBwb_clDYtQ",
+				youtubeId: "dQw4w9WgXcQ"
+            }
+        ];
+
+        let filteredSongs = [...songs];
+        let currentView = 'songs';
+        let selectedBand = null;
+
+        function getUniqueBands() {
+            const bands = {};
+            songs.forEach(song => {
+                if (!bands[song.artist]) {
+                    bands[song.artist] = {
+                        name: song.artist,
+                        count: 0,
+                        songs: []
+                    };
+                }
+                bands[song.artist].count++;
+                bands[song.artist].songs.push(song);
+            });
+            return Object.values(bands);
+        }
+
+        function formatTempo(tempo) {
+            if (tempo >= 60 && tempo <= 90) return "Lento";
+            if (tempo >= 91 && tempo <= 120) return "Moderado";
+            if (tempo >= 121 && tempo <= 150) return "Rápido";
+            return "Muy Rápido";
+        }
+
+        function formatGuitarType(type) {
+            const types = {
+                'electrica': 'Eléctrica',
+                'acustica': 'Acústica',
+                'clasica': 'Clásica'
+            };
+            return types[type] || type;
+        }
+
+        function formatTuning(tuning) {
+            const tunings = {
+                'estandar': 'Estándar',
+                'drop-d': 'Drop D',
+                'drop-c': 'Drop C',
+                'medio-tono': '½ tono ↓'
+            };
+            return tunings[tuning] || tuning;
+        }
+
+        function formatDifficulty(difficulty) {
+            return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+        }
+
+        function renderSongs(songsToRender) {
+            const grid = document.getElementById('songsGrid');
+            grid.innerHTML = '';
+
+            songsToRender.forEach(song => {
+                const songCard = document.createElement('div');
+                songCard.className = 'song-card';
+                songCard.onclick = () => openModal(song);
+                
+                songCard.innerHTML = `
+                    <div class="song-thumbnail">
+                        <img src="${song.thumbnail}" alt="${song.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='${song.thumbnail}';">
+                    </div>
+                    <div class="song-info">
+                        <h3>${song.title}</h3>
+                        <div class="song-genre">${song.artist} - ${song.genre.toUpperCase()}</div>
+                        <div class="song-technical-info">
+                            <div class="tech-item">
+                                <span class="tech-icon">🎸</span>
+                                <span>${formatGuitarType(song.guitarType)}</span>
+                            </div>
+                            <div class="tech-item">
+                                <span class="tech-icon">⚡</span>
+                                <span>${song.tempo} BPM</span>
+                            </div>
+                            <div class="tech-item">
+                                <span class="tech-icon">🎼</span>
+                                <span>${formatTuning(song.tuning)}</span>
+                            </div>
+                            <div class="tech-item">
+                                <span class="difficulty-badge difficulty-${song.difficulty}">${formatDifficulty(song.difficulty)}</span>
+                            </div>
+                        </div>
+                        <div class="song-date">Agregado: ${formatDate(song.date)}</div>
+                    </div>
+                    <div class="song-actions">
+                        <button class="btn btn-free">Ver Detalles</button>
+                    </div>
+                `;
+                
+                grid.appendChild(songCard);
+            });
+        }
+
+        function renderBands() {
+            const grid = document.getElementById('bandsGrid');
+            const bands = getUniqueBands();
+            grid.innerHTML = '';
+
+            bands.forEach(band => {
+                const bandCard = document.createElement('div');
+                bandCard.className = 'band-card';
+                bandCard.onclick = () => showBandSongs(band);
+                
+                bandCard.innerHTML = `
+                    <div class="band-name">${band.name}</div>
+                    <div class="band-count">${band.count} cancion${band.count !== 1 ? 'es' : ''}</div>
+                `;
+                
+                grid.appendChild(bandCard);
+            });
+        }
+
+        function showSongsView() {
+            currentView = 'songs';
+            selectedBand = null;
+            
+            document.getElementById('songsViewBtn').classList.add('active');
+            document.getElementById('bandsViewBtn').classList.remove('active');
+            
+            document.getElementById('songsGrid').style.display = 'grid';
+            document.getElementById('bandsGrid').style.display = 'none';
+            document.getElementById('filtersSection').style.display = 'grid';
+            document.getElementById('sectionHeader').style.display = 'none';
+            
+            const sortedSongs = [...songs].sort((a, b) => new Date(b.date) - new Date(a.date));
+            filteredSongs = sortedSongs;
+            filterSongs();
+        }
+
+        function showBandsView() {
+            currentView = 'bands';
+            selectedBand = null;
+            
+            document.getElementById('songsViewBtn').classList.remove('active');
+            document.getElementById('bandsViewBtn').classList.add('active');
+            
+            document.getElementById('songsGrid').style.display = 'none';
+            document.getElementById('bandsGrid').style.display = 'grid';
+            document.getElementById('filtersSection').style.display = 'none';
+            document.getElementById('sectionHeader').style.display = 'none';
+            
+            renderBands();
+        }
+
+        function showBandSongs(band) {
+            currentView = 'band-songs';
+            selectedBand = band;
+            
+            document.getElementById('sectionTitle').textContent = band.name;
+            document.getElementById('sectionHeader').style.display = 'flex';
+            
+            document.getElementById('songsGrid').style.display = 'grid';
+            document.getElementById('bandsGrid').style.display = 'none';
+            document.getElementById('filtersSection').style.display = 'none';
+            
+            const sortedBandSongs = [...band.songs].sort((a, b) => new Date(b.date) - new Date(a.date));
+            renderSongs(sortedBandSongs);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        function getTempoRange(tempo) {
+            if (tempo >= 60 && tempo <= 90) return "lento";
+            if (tempo >= 91 && tempo <= 120) return "moderado";
+            if (tempo >= 121 && tempo <= 150) return "rapido";
+            return "muy-rapido";
+        }
+
+        function filterSongs() {
+            if (currentView !== 'songs') return;
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const genreFilter = document.getElementById('genreFilter').value;
+            const guitarTypeFilter = document.getElementById('guitarTypeFilter').value;
+            const tempoFilter = document.getElementById('tempoFilter').value;
+            const tuningFilter = document.getElementById('tuningFilter').value;
+            const difficultyFilter = document.getElementById('difficultyFilter').value;
+
+            const sortedSongs = [...songs].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            filteredSongs = sortedSongs.filter(song => {
+                const matchesSearch = song.title.toLowerCase().includes(searchTerm) || 
+                                    song.artist.toLowerCase().includes(searchTerm);
+                const matchesGenre = !genreFilter || song.genre === genreFilter;
+                const matchesGuitarType = !guitarTypeFilter || song.guitarType === guitarTypeFilter;
+                const matchesTempo = !tempoFilter || getTempoRange(song.tempo) === tempoFilter;
+                const matchesTuning = !tuningFilter || song.tuning === tuningFilter;
+                const matchesDifficulty = !difficultyFilter || song.difficulty === difficultyFilter;
+                
+                return matchesSearch && matchesGenre && matchesGuitarType && 
+                       matchesTempo && matchesTuning && matchesDifficulty;
+            });
+
+            renderSongs(filteredSongs);
+        }
+
+        function scrollToOptions() {
+    const searchContainer = document.querySelector('.search-container');
+    // Más offset en móviles
+    const isMobile = window.innerWidth <= 768;
+    const offset = isMobile ? 136 : 106; // 150px en móvil, 100px en desktop
+    const offsetTop = searchContainer.offsetTop - offset;
+    window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+    });
+}
+
+        function openModal(song) {
+            document.getElementById('modalTitle').textContent = song.title;
+            document.getElementById('modalGenre').textContent = `${song.artist} - ${song.genre.toUpperCase()}`;
+            
+            // Agregar información técnica al contenedor
+            const technicalContainer = document.getElementById('technicalDetailsContainer');
+            technicalContainer.innerHTML = `
+                <div class="technical-title">
+                    <span>🎼</span>
+                    <span>Información Técnica</span>
+                </div>
+                <div class="tech-grid">
+                    <div class="tech-detail">
+                        <div class="tech-label">⚡ Tempo</div>
+                        <div class="tech-value">${song.tempo} BPM</div>
+                    </div>
+                    <div class="tech-detail">
+                        <div class="tech-label">🎵 Tonalidad</div>
+                        <div class="tech-value">${song.key}</div>
+                    </div>
+                    <div class="tech-detail">
+                        <div class="tech-label">🎸 Guitarra</div>
+                        <div class="tech-value">${formatGuitarType(song.guitarType)}</div>
+                    </div>
+                    <div class="tech-detail">
+                        <div class="tech-label">🎼 Afinación</div>
+                        <div class="tech-value">${formatTuning(song.tuning)}</div>
+                    </div>
+                </div>
+                
+                <div class="tech-detail">
+                    <div class="tech-label">🎹 Progresión de Acordes</div>
+                    <div class="chord-progression">${song.chordProgression}</div>
+                </div>
+                
+                <div class="tech-detail">
+                    <div class="tech-label">📋 Estructura de la Canción</div>
+                    <div class="song-structure">${song.structure}</div>
+                </div>
+                
+                <div class="tech-detail">
+                    <div class="tech-label">🎯 Técnicas Requeridas</div>
+                    <div class="techniques-list">
+                        ${song.techniques.map(technique => 
+                            `<span class="technique-tag">${technique}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('songModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('songModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function downloadFree() {
+            alert('¡Descarga gratuita iniciada! El archivo MP3 (128kbps) y la vista previa de la tablatura se descargarán automáticamente.');
+        }
+
+        function buyPremium() {
+            alert('Redirigiendo al sistema de pago... Introduce tu alias para recibir la versión premium completa (320kbps + PDF tablatura completa).');
+        }
+
+        function scrollToTopFunction() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function updateScrollProgress() {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollProgress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scrollProgress').style.width = scrollProgress + '%';
+        }
+
+        function toggleScrollToTop() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            if (document.documentElement.scrollTop > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterSongs);
+        document.getElementById('genreFilter').addEventListener('change', filterSongs);
+        document.getElementById('guitarTypeFilter').addEventListener('change', filterSongs);
+        document.getElementById('tempoFilter').addEventListener('change', filterSongs);
+        document.getElementById('tuningFilter').addEventListener('change', filterSongs);
+        document.getElementById('difficultyFilter').addEventListener('change', filterSongs);
+
+        window.addEventListener('scroll', function() {
+            updateScrollProgress();
+            toggleScrollToTop();
+        });
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('songModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Home') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        });
+
+        // Cargar vista inicial
+        showSongsView();
+    </script>
+</body>
+</html>
