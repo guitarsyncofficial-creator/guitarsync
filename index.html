@@ -1559,12 +1559,17 @@
             
             document.getElementById('songModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
+			document.querySelector('.modal-content').scrollTop = 0;
         }
 
         function closeModal() {
-            document.getElementById('songModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+    // Detener el video limpiando el src
+    const iframe = document.getElementById('youtubeIframe');
+    iframe.src = '';
+    
+    document.getElementById('songModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
 
         function downloadFree() {
             alert('¡Descarga gratuita iniciada! El archivo MP3 (128kbps) y la vista previa de la tablatura se descargarán automáticamente.');
