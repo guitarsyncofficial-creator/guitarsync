@@ -693,16 +693,11 @@
         .premium-features li::before {
             color: #00d4ff;
         }
-
-        .tablature-preview {
-            background: #f8f9fa;
-            color: #333;
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-        }
+		
+		.feature-not-included::before {
+    content: "❌" !important;
+    color: #ef4444 !important;
+}
 
         .hero {
             height: 100vh;
@@ -1179,38 +1174,33 @@
 
                 <!-- Opciones de descarga lado a lado -->
                 <div class="download-section">
-                    <div class="download-option">
-                        <div class="download-title">
-                            <span>Basico</span>
-                            <span class="free-badge">GRATIS</span>
-                        </div>
-                        <ul class="features-list">
-                            <li>Calidad 128 kbps</li>
-                            <li>Sin pista de voz</li>
-                            <li>Vista previa de tablatura</li>
-                        </ul>
-                        <div class="tablature-preview">
-                            <strong>Vista previa de tablatura:</strong><br>
-                            E|--3--3--3--3--|<br>
-                            B|--3--3--3--3--|<br>
-                            G|--0--0--0--0--|<br>
-                            <em>...contenido limitado...</em>
-                        </div>
-                        <button class="btn btn-free" onclick="downloadFree()">Descarga Gratuita</button>
-                    </div>
-                    
-                    <div class="download-option">
-                        <div class="download-title">
-                            <span>Avanzado</span>
-                            <span class="premium-badge">PREMIUM</span>
-                        </div>
-                        <ul class="features-list premium-features">
-                            <li>Calidad 320 kbps</li>
-                            <li>Con pista de voz</li>
-                            <li>Tablatura completa en PDF</li>
-                        </ul>
-                        <button class="btn btn-premium" onclick="buyPremium()">Comprar Premium - $2.99</button>
-                    </div>
+    <div class="download-option">
+    <div class="download-title">
+        <span>Básico</span>
+        <span class="free-badge">GRATIS</span>
+    </div>
+    <ul class="features-list">
+        <li>Calidad 128 kbps</li>
+        <li class="feature-not-included">Sin pista de voz</li>
+        <li class="feature-not-included">Tablatura no incluida</li>
+    </ul>
+    <button class="btn btn-free" id="modalFreeBtn">Descarga Gratuita</button>
+</div>
+
+    <div class="download-option">
+        <div class="download-title">
+            <span>Avanzado</span>
+            <span class="premium-badge">PREMIUM</span>
+        </div>
+        <ul class="features-list premium-features">
+            <li>Calidad 320 kbps</li>
+            <li>Con pista de voz</li>
+            <li>Tablatura completa en PDF</li>
+        </ul>
+        <button class="btn btn-premium" id="modalPremiumBtn">Comprar Premium - $1.500 ARS</button>
+		<li>IMPORTANTE: Archivo unico</li>
+    </div>
+</div>
                 </div>
             </div>
         </div>
@@ -1339,48 +1329,48 @@
         }
 
         function renderSongs(songsToRender) {
-            const grid = document.getElementById('songsGrid');
-            grid.innerHTML = '';
+    const grid = document.getElementById('songsGrid');
+    grid.innerHTML = '';
 
-            songsToRender.forEach(song => {
-                const songCard = document.createElement('div');
-                songCard.className = 'song-card';
-                songCard.onclick = () => openModal(song);
-                
-                songCard.innerHTML = `
-                    <div class="song-thumbnail">
-                        <img src="${song.thumbnail}" alt="${song.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='${song.thumbnail}';">
+    songsToRender.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'song-card';
+        songCard.onclick = () => openModal(song);
+        
+        songCard.innerHTML = `
+            <div class="song-thumbnail">
+                <img src="${song.thumbnail}" alt="${song.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎵';">
+            </div>
+            <div class="song-info">
+                <h3>${song.title}</h3>
+                <div class="song-genre">${song.artist} - ${song.genre.toUpperCase()}</div>
+                <div class="song-technical-info">
+                    <div class="tech-item">
+                        <span class="tech-icon">🎸</span>
+                        <span>${formatGuitarType(song.guitarType)}</span>
                     </div>
-                    <div class="song-info">
-                        <h3>${song.title}</h3>
-                        <div class="song-genre">${song.artist} - ${song.genre.toUpperCase()}</div>
-                        <div class="song-technical-info">
-                            <div class="tech-item">
-                                <span class="tech-icon">🎸</span>
-                                <span>${formatGuitarType(song.guitarType)}</span>
-                            </div>
-                            <div class="tech-item">
-                                <span class="tech-icon">⚡</span>
-                                <span>${song.tempo} BPM</span>
-                            </div>
-                            <div class="tech-item">
-                                <span class="tech-icon">🎼</span>
-                                <span>${formatTuning(song.tuning)}</span>
-                            </div>
-                            <div class="tech-item">
-                                <span class="difficulty-badge difficulty-${song.difficulty}">${formatDifficulty(song.difficulty)}</span>
-                            </div>
-                        </div>
-                        <div class="song-date">Agregado: ${formatDate(song.date)}</div>
+                    <div class="tech-item">
+                        <span class="tech-icon">⚡</span>
+                        <span>${song.tempo} BPM</span>
                     </div>
-                    <div class="song-actions">
-                        <button class="btn btn-free">Ver Detalles</button>
+                    <div class="tech-item">
+                        <span class="tech-icon">🎼</span>
+                        <span>${formatTuning(song.tuning)}</span>
                     </div>
-                `;
-                
-                grid.appendChild(songCard);
-            });
-        }
+                    <div class="tech-item">
+                        <span class="difficulty-badge difficulty-${song.difficulty}">${formatDifficulty(song.difficulty)}</span>
+                    </div>
+                </div>
+                <div class="song-date">Agregado: ${formatDate(song.date)}</div>
+            </div>
+            <div class="song-actions">
+    <button class="btn btn-free">Ver Detalles</button>
+</div>
+        `;
+        
+        grid.appendChild(songCard);
+    });
+}	
 
         function renderBands() {
             const grid = document.getElementById('bandsGrid');
@@ -1560,6 +1550,8 @@
             document.getElementById('songModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
 			document.querySelector('.modal-content').scrollTop = 0;
+			document.getElementById('modalFreeBtn').onclick = () => downloadFree(song.id);
+document.getElementById('modalPremiumBtn').onclick = () => buyPremium(song.id);
         }
 
         function closeModal() {
@@ -1571,13 +1563,349 @@
     document.body.style.overflow = 'auto';
 }
 
-        function downloadFree() {
-            alert('¡Descarga gratuita iniciada! El archivo MP3 (128kbps) y la vista previa de la tablatura se descargarán automáticamente.');
+function downloadFree(songId) {
+    const downloadLinks = {
+        1: "", // De Musica Ligera
+        2: "", // Ji Ji Ji
+        3: "https://drive.google.com/file/d/1BN3-_pNDNV8iuR5S9F7c_z4vk4QzRSyH/view?usp=sharing", // Kamikaze
+        4: ""  // Persiana Americana
+    };
+    
+    const link = downloadLinks[songId];
+    if (link && link !== "") {
+        window.open(link, '_blank');
+    } else {
+        showNotAvailableToastMobile();
+    }
+}
+function showNotAvailableToast() {
+    // Crear el toast
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #1e3a5f, #2c5aa0);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px;
+        border: 1px solid #00d4ff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        max-width: 320px;
+        backdrop-filter: blur(10px);
+    `;
+    
+    toast.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2rem;">⏳</div>
+            <div>
+                <div style="font-weight: bold; color: #00d4ff; margin-bottom: 0.5rem;">
+                    Descarga no disponible
+                </div>
+                <div style="font-size: 0.9rem; color: #87ceeb;">
+                    ¡Próximamente disponible!
+                </div>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                background: none; 
+                border: none; 
+                color: #87ceeb; 
+                font-size: 1.5rem; 
+                cursor: pointer; 
+                padding: 0; 
+                margin-left: auto;
+                transition: color 0.3s ease;
+            " onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#87ceeb'">
+                ×
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto-remover después de 4 segundos
+    setTimeout(() => {
+        toast.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 400);
+    }, 4000);
+}
+function showNotAvailableToastMobile() {
+    const isMobile = window.innerWidth <= 768;
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        ${isMobile ? 'top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);' : 'top: 20px; right: 20px; transform: translateX(400px);'}
+        background: linear-gradient(135deg, #1e3a5f, #2c5aa0);
+        color: white;
+        padding: ${isMobile ? '2rem' : '1.5rem 2rem'};
+        border-radius: 15px;
+        border: 1px solid #00d4ff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        max-width: ${isMobile ? '280px' : '320px'};
+        backdrop-filter: blur(10px);
+        text-align: center;
+    `;
+    
+    toast.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 1rem; ${isMobile ? 'flex-direction: column; text-align: center;' : ''}">
+            <div style="font-size: 2rem;">⏳</div>
+            <div ${isMobile ? 'style="text-align: center;"' : ''}>
+                <div style="font-weight: bold; color: #00d4ff; margin-bottom: 0.5rem;">
+                    Descarga no disponible
+                </div>
+                <div style="font-size: 0.9rem; color: #87ceeb;">
+                    ¡Próximamente disponible!
+                </div>
+            </div>
+            ${!isMobile ? `<button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #87ceeb; font-size: 1.5rem; cursor: pointer; padding: 0; margin-left: auto; transition: color 0.3s ease;" onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#87ceeb'">×</button>` : ''}
+        </div>
+        ${isMobile ? `<button onclick="this.parentElement.remove()" style="background: rgba(0,212,255,0.1); color: #00d4ff; border: 1px solid #00d4ff; padding: 0.6rem 1.5rem; border-radius: 20px; margin-top: 1rem; cursor: pointer; width: 100%;">Cerrar</button>` : ''}
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        if (isMobile) {
+            toast.style.transform = 'translate(-50%, -50%) scale(1)';
+        } else {
+            toast.style.transform = 'translateX(0)';
         }
+    }, 100);
+    
+    // Auto-remover después de 4 segundos
+    setTimeout(() => {
+        if (isMobile) {
+            toast.style.transform = 'translate(-50%, -50%) scale(0)';
+        } else {
+            toast.style.transform = 'translateX(400px)';
+        }
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 400);
+    }, 4000);
+}
 
-        function buyPremium() {
-            alert('Redirigiendo al sistema de pago... Introduce tu alias para recibir la versión premium completa (320kbps + PDF tablatura completa).');
+        function buyPremium(songId) {
+    const song = songs.find(s => s.id === songId);
+    const songTitle = song ? song.title : document.getElementById('modalTitle').textContent;
+    const supportEmail = "guitarsync.official@gmail.com";
+    
+    const emailSubject = `Compra Premium - ${songTitle}`;
+    const emailBody = `Hola!
+
+Me interesa comprar la versión premium de: ${songTitle}
+Precio: $1.500 ARS
+
+¿Cuáles son las opciones de pago disponibles?
+
+Gracias!`;
+
+    // Detectar si es móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    
+    if (isMobile) {
+        const gmailAppUrl = `googlegmail://co?to=${supportEmail}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        const mailtoLink = `mailto:${supportEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        showPaymentModal(songTitle, gmailAppUrl, mailtoLink, supportEmail, true);
+    } else {
+        const gmailWebUrl = `https://mail.google.com/mail/?view=cm&to=${supportEmail}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        const mailtoLink = `mailto:${supportEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        showPaymentModal(songTitle, gmailWebUrl, mailtoLink, supportEmail, false);
+    }
+}
+
+    function showPaymentModal(songTitle, primaryUrl, fallbackUrl, email, isMobile) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.9); z-index: 2000; display: flex; 
+        align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        padding: ${isMobile ? '1rem' : '2rem'};
+    `;
+    
+    const deviceIcon = isMobile ? '' : '';
+    
+    modal.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #1e3a5f, #2c5aa0); 
+            padding: ${isMobile ? '1.5rem' : '2rem'}; 
+            border-radius: 20px; 
+            text-align: center; 
+            color: white; 
+            width: 100%;
+            max-width: ${isMobile ? '320px' : '450px'}; 
+            max-height: ${isMobile ? '90vh' : '85vh'};
+            border: 1px solid #00d4ff; 
+            overflow-y: auto;
+            box-sizing: border-box;
+        ">
+            <div style="font-size: ${isMobile ? '2rem' : '2.5rem'}; margin-bottom: 1rem;">${deviceIcon}</div>
+            <h3 style="color: #00d4ff; margin-bottom: 1rem; font-size: ${isMobile ? '1.3rem' : '1.5rem'};">Comprar Premium</h3>
+            <p style="margin-bottom: 0.5rem; font-size: ${isMobile ? '1rem' : '1.1rem'};"><strong>${songTitle}</strong></p>
+            <p style="color: #00d4ff; font-size: ${isMobile ? '1.2rem' : '1.3rem'}; font-weight: bold; margin-bottom: 1.5rem;">$1.500 ARS</p>
+            
+            <div style="
+                background: rgba(0,212,255,0.1); 
+                padding: ${isMobile ? '1rem' : '1.5rem'}; 
+                border-radius: 15px; 
+                margin: 1.5rem 0; 
+                border: 1px solid rgba(0,212,255,0.3);
+            ">
+                <p style="font-size: ${isMobile ? '0.9rem' : '0.95rem'}; margin-bottom: 1rem;">📦 <strong>Incluye:</strong></p>
+                <div style="text-align: left; font-size: ${isMobile ? '0.8rem' : '0.85rem'}; line-height: 1.6;">
+                    ✅ Backing track en alta calidad (320kbps)<br>
+                    ✅ Versión con pista de voz incluida<br>
+                    ✅ Tablatura completa en PDF<br>
+                    ✅ Entrega por email en 24-48hs<br>
+                </div>
+            </div>
+            
+            <div style="
+                background: rgba(135,206,235,0.1); 
+                padding: 1rem; 
+                border-radius: 10px; 
+                margin: 1rem 0; 
+                border: 1px solid rgba(135,206,235,0.3);
+            ">
+			<p style="font-size: ${isMobile ? '0.85rem' : '0.9rem'}; color: #fbbf24; text-align: center;">
+        <strong>⚠️ IMPORTANTE:</strong><br>
+        Esta compra es solo para "${songTitle}".<br>
+        Cada canción se vende por separado.
+    </p>             
+				<p style="font-size: ${isMobile ? '0.85rem' : '0.9rem'}; color: #87ceeb;"><strong>📧 Email de contacto:</strong></p>
+                <p style="font-size: ${isMobile ? '0.85rem' : '0.9rem'}; margin: 0.5rem 0; color: white; word-break: break-all;">${email}</p>
+            </div>
+            
+            <button onclick="smartEmailOpen('${primaryUrl}', '${fallbackUrl}', ${isMobile})" style="
+                background: linear-gradient(45deg, #00d4ff, #0ea5e9); 
+                color: white; 
+                border: none; 
+                padding: ${isMobile ? '0.9rem 1.5rem' : '1rem 2rem'}; 
+                border-radius: 25px; 
+                margin: 0.5rem 0; 
+                cursor: pointer; 
+                font-weight: bold; 
+                width: 100%; 
+                transition: all 0.3s ease;
+                font-size: ${isMobile ? '0.9rem' : '1rem'};
+            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                📧 Enviar Email
+            </button>
+            
+            <button id="copyEmailBtn-${Date.now()}" onclick="copyEmailToClipboardWithFeedback(this, '${email}')" style="
+                background: rgba(135,206,235,0.1); 
+                color: #87ceeb; 
+                border: 1px solid #87ceeb; 
+                padding: ${isMobile ? '0.7rem 1.2rem' : '0.8rem 1.5rem'}; 
+                border-radius: 25px; 
+                margin: 0.5rem 0; 
+                cursor: pointer; 
+                width: 100%; 
+                transition: all 0.3s ease;
+                font-size: ${isMobile ? '0.85rem' : '0.9rem'};
+            ">
+                📋 Copiar Email
+            </button>
+            
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                background: transparent; 
+                color: #87ceeb; 
+                border: 1px solid #87ceeb; 
+                padding: ${isMobile ? '0.7rem 1.2rem' : '0.8rem 1.5rem'}; 
+                border-radius: 25px; 
+                margin: 0.5rem 0; 
+                cursor: pointer; 
+                width: 100%;
+                font-size: ${isMobile ? '0.85rem' : '0.9rem'};
+            ">
+                Cancelar
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function smartEmailOpen(primaryUrl, fallbackUrl, isMobile) {
+    if (isMobile) {
+        // En móvil: intentar Gmail app primero, luego fallback automático
+        window.location.href = primaryUrl;
+        
+        // Si Gmail app no se abre en 2.5 segundos, usar fallback
+        setTimeout(() => {
+            window.open(fallbackUrl, '_blank');
+        }, 2500);
+    } else {
+        // En PC: intentar Gmail web primero
+        try {
+            window.open(primaryUrl, '_blank');
+        } catch (e) {
+            // Si falla, usar mailto
+            window.open(fallbackUrl, '_blank');
         }
+    }
+}
+
+function openGmailApp(gmailAppUrl, fallbackUrl) {
+    // Intentar abrir Gmail app
+    window.location.href = gmailAppUrl;
+    
+    // Si no funciona en 2 segundos, abrir cliente de email por defecto
+    setTimeout(() => {
+        window.open(fallbackUrl, '_blank');
+    }, 2000);
+}
+
+function copyEmailToClipboardWithFeedback(button, email) {
+    const originalText = button.innerHTML;
+    const originalStyle = button.style.cssText;
+    
+    navigator.clipboard.writeText(email).then(() => {
+        // Cambiar el botón para mostrar éxito con tilde
+        button.innerHTML = '✅ ¡Copiado!';
+        button.style.background = 'rgba(34, 197, 94, 0.2)';
+        button.style.color = '#22c55e';
+        button.style.borderColor = '#22c55e';
+        button.style.transform = 'scale(1.05)';
+        
+        // Volver al estado original después de 3 segundos
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.cssText = originalStyle;
+        }, 3000);
+    }).catch(() => {
+        // Fallback - mostrar el email para copiar manualmente
+        button.innerHTML = '📝 Ver Email';
+        button.style.background = 'rgba(249, 115, 22, 0.2)';
+        button.style.color = '#f97316';
+        button.style.borderColor = '#f97316';
+        
+        // Mostrar el email en un prompt para copiar
+        setTimeout(() => {
+            prompt('Copia este email:', email);
+            button.innerHTML = originalText;
+            button.style.cssText = originalStyle;
+        }, 500);
+    });
+}
 
         function scrollToTopFunction() {
             window.scrollTo({
